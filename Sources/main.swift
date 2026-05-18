@@ -130,9 +130,11 @@ class PopoverVC: NSViewController {
         title.font = NSFont.systemFont(ofSize: 13, weight: .semibold)
         title.textColor = NSColor.white.withAlphaComponent(0.8)
         title.frame = NSRect(x: 150, y: 42, width: 140, height: 16)
+        title.alignment = .center
         view.addSubview(title)
 
         nextLbl.frame = NSRect(x: 150, y: 26, width: 140, height: 14)
+        nextLbl.alignment = .center
         nextLbl.font = NSFont.systemFont(ofSize: 11, weight: .semibold)
         nextLbl.textColor = NSColor.white.withAlphaComponent(0.5)
         view.addSubview(nextLbl)
