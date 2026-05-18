@@ -92,7 +92,7 @@ class PopoverVC: NSViewController {
     var lastFetch = Date()
 
     override func loadView() {
-        view = NSView(frame: NSRect(x: 0, y: 0, width: 300, height: 92))
+        view = NSView(frame: NSRect(x: 0, y: 0, width: 300, height: 76))
 
         let blur = NSVisualEffectView(frame: view.bounds)
         blur.material = .popover
@@ -100,52 +100,42 @@ class PopoverVC: NSViewController {
         blur.state = .active
         view.addSubview(blur)
 
-        sessionDonut.frame = NSRect(x: 14, y: 21, width: 50, height: 50)
+        sessionDonut.frame = NSRect(x: 14, y: 14, width: 50, height: 50)
         sessionDonut.ringColor = NSColor.white.withAlphaComponent(0.55)
         view.addSubview(sessionDonut)
 
         let curLbl = label("CURRENT", size: 7)
-        curLbl.frame = NSRect(x: 14, y: 8, width: 50, height: 10)
+        curLbl.frame = NSRect(x: 14, y: 2, width: 50, height: 10)
         curLbl.alignment = .center
         view.addSubview(curLbl)
 
-        let sep1 = NSBox(frame: NSRect(x: 72, y: 16, width: 1, height: 58))
+        let sep1 = NSBox(frame: NSRect(x: 72, y: 8, width: 1, height: 60))
         sep1.boxType = .separator
         view.addSubview(sep1)
 
-        weeklyDonut.frame = NSRect(x: 82, y: 21, width: 50, height: 50)
+        weeklyDonut.frame = NSRect(x: 82, y: 14, width: 50, height: 50)
         weeklyDonut.ringColor = NSColor.white.withAlphaComponent(0.32)
         view.addSubview(weeklyDonut)
 
         let wkLbl = label("WEEKLY", size: 7)
-        wkLbl.frame = NSRect(x: 82, y: 8, width: 50, height: 10)
+        wkLbl.frame = NSRect(x: 82, y: 2, width: 50, height: 10)
         wkLbl.alignment = .center
         view.addSubview(wkLbl)
 
-        let sep2 = NSBox(frame: NSRect(x: 140, y: 16, width: 1, height: 58))
+        let sep2 = NSBox(frame: NSRect(x: 140, y: 8, width: 1, height: 60))
         sep2.boxType = .separator
         view.addSubview(sep2)
 
-        let title = label("Claude Code", size: 13)
+        let title = label("Claude Monitor", size: 13)
         title.font = NSFont.systemFont(ofSize: 13, weight: .semibold)
         title.textColor = NSColor.white.withAlphaComponent(0.8)
-        title.frame = NSRect(x: 150, y: 68, width: 140, height: 16)
+        title.frame = NSRect(x: 150, y: 42, width: 140, height: 16)
         view.addSubview(title)
 
-        sessionLbl.frame = NSRect(x: 150, y: 52, width: 140, height: 14)
-        sessionLbl.font = NSFont.systemFont(ofSize: 10.5)
-        sessionLbl.textColor = NSColor.white.withAlphaComponent(0.3)
-        view.addSubview(sessionLbl)
-
-        nextLbl.frame = NSRect(x: 150, y: 36, width: 140, height: 14)
+        nextLbl.frame = NSRect(x: 150, y: 26, width: 140, height: 14)
         nextLbl.font = NSFont.systemFont(ofSize: 11, weight: .semibold)
         nextLbl.textColor = NSColor.white.withAlphaComponent(0.5)
         view.addSubview(nextLbl)
-
-        weeklyLbl.frame = NSRect(x: 150, y: 22, width: 140, height: 14)
-        weeklyLbl.font = NSFont.systemFont(ofSize: 10)
-        weeklyLbl.textColor = NSColor.white.withAlphaComponent(0.2)
-        view.addSubview(weeklyLbl)
 
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in self?.tick() }
     }
@@ -228,7 +218,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
 
         let p = NSPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 300, height: 92),
+            contentRect: NSRect(x: 0, y: 0, width: 300, height: 76),
             styleMask: [.nonactivatingPanel, .fullSizeContentView, .borderless],
             backing: .buffered,
             defer: false
@@ -275,7 +265,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         } else {
             let btnFrame = btn.window?.convertToScreen(btn.frame) ?? .zero
             let x = btnFrame.midX - 150
-            let y = btnFrame.minY - 92 - 4
+            let y = btnFrame.minY - 76 - 1
             panel.setFrameOrigin(NSPoint(x: x, y: y))
             panel.alphaValue = 0
             panel.makeKeyAndOrderFront(nil)
