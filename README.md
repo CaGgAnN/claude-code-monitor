@@ -1,52 +1,96 @@
 # Claude Code Monitor
 
-A lightweight macOS menu bar app that shows your Claude Code usage limits in real time.
+A native macOS menu bar app that shows your Claude Code usage limits in real time — current session % and weekly %, built with Swift/AppKit.
 
-## Features
+## What it looks like
 
-- Robot pixel icon in your menu bar with live session %
-- Current session (5h) and weekly usage donuts
-- Countdown timer to next session reset
-- Auto-refreshes every 60 seconds
-- Native Swift/AppKit — no Electron, no WebView, zero animation jank
-- Reads your existing Claude Code credentials — no API key setup needed
+- A pixel robot icon sits in your menu bar
+- Next to it, your current session usage percentage (e.g. `32%`)
+- Click it to open a widget showing:
+  - **Current** — 5-hour session usage donut
+  - **Weekly** — 7-day usage donut  
+  - **Next session** — countdown timer to your next reset
+  - **Week** — weekly usage percentage
+
+## How it works
+
+Claude Code stores your OAuth credentials in macOS Keychain under `Claude Code-credentials`. This app:
+
+1. Reads your access token from Keychain at startup
+2. Makes a minimal API call every 60 seconds to `api.anthropic.com/v1/messages` (1 token of claude-haiku — essentially free)
+3. Reads usage data directly from the response headers:
+   - `anthropic-ratelimit-unified-5h-utilization` → Current session %
+   - `anthropic-ratelimit-unified-7d-utilization` → Weekly %
+   - `anthropic-ratelimit-unified-5h-reset` → Unix timestamp of next reset
+4. Displays everything in a native AppKit popover panel
+
+No scraping, no reverse engineering — Anthropic sends this data in every API response.
 
 ## Requirements
 
-- macOS 13+
-- Claude Code installed and logged in
+- macOS 13 or later
+- Claude Code installed and logged in (run `claude` at least once)
+- Swift toolchain (comes with Xcode Command Line Tools)
 
 ## Installation
+
+### One-line install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/CaGgAnN/claude-code-monitor/main/install.sh | bash
+```
+
+This clones the repo, builds it, creates the app bundle, and installs to `/Applications/`.
 
 ### Build from source
 
 ```bash
+# Clone the repo
 git clone https://github.com/yourusername/claude-code-monitor.git
 cd claude-code-monitor
+
+# Build
 swift build -c release
+
+# Create app bundle
 mkdir -p ClaudeMonitor.app/Contents/MacOS
 cp .build/release/ClaudeMonitor ClaudeMonitor.app/Contents/MacOS/
+cp Info.plist ClaudeMonitor.app/Contents/
+
+# Install
 cp -r ClaudeMonitor.app /Applications/
 open /Applications/ClaudeMonitor.app
 ```
 
-## How it works
-
-Reads your Claude Code OAuth token from macOS Keychain and makes a minimal API call to get usage from response headers:
-
-- `anthropic-ratelimit-unified-5h-utilization` — Current session %
-- `anthropic-ratelimit-unified-7d-utilization` — Weekly %
-- `anthropic-ratelimit-unified-5h-reset` — Reset timestamp
-
 ## Usage
 
-- Left click the menu bar icon to open/close the widget
-- Right click → Quit to exit
-- Login on startup: System Settings → General → Login Items → add ClaudeMonitor
+| Action | Result |
+|--------|--------|
+| Left click icon | Open / close widget |
+| Right click icon | Show quit menu |
+| Quit | Closes the app |
 
-## Privacy
+### Launch on startup
 
-All data stays local. Only network request is to api.anthropic.com using your own credentials.
+System Settings → General → Login Items → click `+` → select `ClaudeMonitor.app`
+
+### Uninstall
+
+```bash
+pkill ClaudeMonitor
+rm -rf /Applications/ClaudeMonitor.app
+```
+
+## Privacy & Security
+
+- Your token never leaves your machine except to Anthropic's own API
+- No analytics, no telemetry, no third-party requests
+- All credential access goes through macOS Keychain — the same way Claude Code itself does it
+- Open source — read every line
+
+## Technical details
+
+Built with pure Swift + AppKit. No Electron, no WebKit, no web views. The widget is a native `NSPanel` with `NSVisualEffectView` for the blur/glass background. Donut charts are drawn with `NSBezierPath`. The tray icon is rendered programmatically as a pixel art robot.
 
 ## License
 
