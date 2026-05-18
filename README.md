@@ -95,3 +95,15 @@ Built with pure Swift + AppKit. No Electron, no WebKit, no web views. The widget
 ## License
 
 MIT
+
+## Troubleshooting
+
+**Values showing 0%?**
+
+Your Claude Code token may have expired. Run this in your terminal to refresh it:
+
+```bash
+claude -p "hi"
+```
+
+Then restart Claude Monitor. This only happens if you haven't used Claude Code for a while.
