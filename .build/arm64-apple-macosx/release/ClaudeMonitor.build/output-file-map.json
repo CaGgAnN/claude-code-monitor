@@ -1,0 +1,13 @@
+{
+  "": {
+    "dependencies": "/Users/cagankucukcan/claude-monitor-swift/.build/arm64-apple-macosx/release/ClaudeMonitor.build/ClaudeMonitor.d",
+    "object": "/Users/cagankucukcan/claude-monitor-swift/.build/arm64-apple-macosx/release/ClaudeMonitor.build/ClaudeMonitor.o",
+    "swift-dependencies": "/Users/cagankucukcan/claude-monitor-swift/.build/arm64-apple-macosx/release/ClaudeMonitor.build/master.swiftdeps"
+  },
+  "/Users/cagankucukcan/claude-monitor-swift/Sources/main.swift": {
+    "object": "/Users/cagankucukcan/claude-monitor-swift/.build/arm64-apple-macosx/release/ClaudeMonitor.build/main.swift.o",
+    "swiftmodule": "/Users/cagankucukcan/claude-monitor-swift/.build/arm64-apple-macosx/release/ClaudeMonitor.build/main~partial.swiftmodule",
+    "swift-dependencies": "/Users/cagankucukcan/claude-monitor-swift/.build/arm64-apple-macosx/release/ClaudeMonitor.build/main.swiftdeps",
+    "diagnostics": "/Users/cagankucukcan/claude-monitor-swift/.build/arm64-apple-macosx/release/ClaudeMonitor.build/main.dia"
+  }
+}
