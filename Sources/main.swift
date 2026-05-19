@@ -31,17 +31,29 @@ func fetchUsage(token: String, completion: @escaping (UsageData) -> Void) {
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.httpBody = #"{"model":"claude-haiku-4-5","max_tokens":1,"messages":[{"role":"user","content":"hi"}]}"#.data(using: .utf8)
     URLSession.shared.dataTask(with: request) { _, response, _ in
-        var usage = UsageData()
-        if let http = response as? HTTPURLResponse {
-            let h = http.allHeaderFields
-            if let s = h["anthropic-ratelimit-unified-5h-utilization"] as? String { usage.sessionPct = (Double(s) ?? 0) * 100 }
-            if let s = h["anthropic-ratelimit-unified-7d-utilization"] as? String { usage.weeklyPct = (Double(s) ?? 0) * 100 }
-            if let s = h["anthropic-ratelimit-unified-5h-reset"] as? String {
-                usage.sessionResetSecs = max(0, (Int(s) ?? 0) - Int(Date().timeIntervalSince1970))
+            var usage = UsageData()
+            if let http = response as? HTTPURLResponse {
+                if http.statusCode == 401 {
+                    DispatchQueue.global(qos: .background).async {
+                        let task = Process()
+                        task.launchPath = "/bin/bash"
+                        task.arguments = ["-c", "/usr/local/bin/claude -p 'hi' > /dev/null 2>&1"]
+                        try? task.run()
+                        task.waitUntilExit()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                            if let t = getToken() { fetchUsage(token: t, completion: completion) }
+                        }
+                    }
+                    return
+                }
+                if let s = http.value(forHTTPHeaderField: "anthropic-ratelimit-unified-5h-utilization") { usage.sessionPct = (Double(s) ?? 0) * 100 }
+                if let s = http.value(forHTTPHeaderField: "anthropic-ratelimit-unified-7d-utilization") { usage.weeklyPct = (Double(s) ?? 0) * 100 }
+                if let s = http.value(forHTTPHeaderField: "anthropic-ratelimit-unified-5h-reset") {
+                    usage.sessionResetSecs = max(0, (Int(s) ?? 0) - Int(Date().timeIntervalSince1970))
+                }
             }
-        }
-        DispatchQueue.main.async { completion(usage) }
-    }.resume()
+            DispatchQueue.main.async { completion(usage) }
+        }.resume()
 }
 
 class DonutView: NSView {
